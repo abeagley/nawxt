@@ -1,0 +1,19 @@
+{
+  "name": "@nawxt/cli",
+  "license": "MIT",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "bin": {
+    "nawxt": "dist/index.js"
+  },
+  "repository": "https://github.com/abeagley/nawxt/packages/cli",
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "rimraf ./dist",
+    "lint": "tslint -t codeFrame 'src/**/*.ts'",
+    "prebuild": "yarn run clean && yarn run lint"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

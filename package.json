@@ -1,20 +1,35 @@
 {
-  "name": "nawxt",
+  "name": "@nawxt/nawxt",
   "version": "0.1.0",
-  "description": "A next/nuxt inspired SSR platform for React applications",
-  "main": "index.js",
+  "description": "A Next/Nuxt inspired SSR platform for React applications using Parcel",
   "repository": "https://github.com/abeagley/nawxt",
   "author": "Aric Beagley <development@bastionweb.io>",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "lerna build",
+    "clean": "lerna clean",
+    "link": "lerna link",
+    "lint": "lerna run lint",
+    "test": "lerna run test"
+  },
   "dependencies": {
     "husky": "^1.2.0",
     "lerna": "^3.5.1"
   },
   "devDependencies": {
+    "@types/fs-extra": "^5.0.4",
     "@types/node": "^10.12.12",
     "@types/react": "^16.7.13",
     "@types/react-dom": "^16.0.11",
+    "cpy-cli": "^2.0.0",
+    "exec-sh": "^0.3.2",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.4",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript2": "^0.18.0",
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1",
     "tslint-react": "^3.6.0",
