@@ -1,0 +1,30 @@
+{
+  "name": "{{projectName}}",
+  "version": "{{projectVersion}}",
+  "private": false,
+  "repository": "{{projectRepo}}",
+  "scripts": {
+    "build": "nawxt-scripts build",
+    "docker": "nawxt-scripts start {{projectPort}}",
+    "start": "nawxt-scripts start",
+    "test": "nawxt-scripts test"
+  },
+  "dependencies": {
+    "@nawxt/scripts": "^{{scriptsVersion}}",
+    "react": "^{{reactVersion}}",
+    "react-dom": "^{{reactVersion}}"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "@types/react": "^16.7.13",
+    "@types/react-dom": "^16.0.11",
+    "tslint": "^5.11.0",
+    {{#switch tslintStyle }}
+      {{#case "standard" }}
+    "tslint-config-standard": "^8.0.1",
+      {{/case}}
+    {{/switch}}
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.2.1"
+  }
+}

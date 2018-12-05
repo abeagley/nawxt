@@ -19,6 +19,7 @@
     "lerna": "^3.5.1"
   },
   "devDependencies": {
+    "@types/app-root-dir": "^0.1.0",
     "@types/fs-extra": "^5.0.4",
     "@types/node": "^10.12.12",
     "@types/react": "^16.7.13",
