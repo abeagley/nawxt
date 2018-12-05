@@ -8,7 +8,7 @@
     "dx-scripts": "dist/index.js"
   },
   "publishConfig": {
-    "registry": "https://nexus.hilton.com/repository/digital-npm/"
+    "access": "public"
   },
   "repository": "https://github.com/abeagley/nawxt/packages/scripts",
   "scripts": {

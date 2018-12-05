@@ -7,10 +7,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "lerna build",
+    "build": "lerna run build",
     "clean": "lerna clean",
     "link": "lerna link",
     "lint": "lerna run lint",
+    "publish": "lerna publish",
     "test": "lerna run test"
   },
   "dependencies": {
@@ -34,5 +35,8 @@
     "tslint-config-standard": "^8.0.1",
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.1"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

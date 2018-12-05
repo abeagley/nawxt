@@ -7,6 +7,9 @@
   "bin": {
     "nawxt": "dist/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": "https://github.com/abeagley/nawxt/packages/cli",
   "scripts": {
     "build": "rollup -c",
