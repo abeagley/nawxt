@@ -173,4 +173,5 @@ $RECYCLE.BIN/
 .atomignore
 .vscode/settings.json
 
+!packages/templates/**/.nawxt/prompts
 !packages/templates/**/.nawxt/prompts/template.js
