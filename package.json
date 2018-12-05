@@ -10,5 +10,14 @@
   "dependencies": {
     "husky": "^1.2.0",
     "lerna": "^3.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "@types/react": "^16.7.13",
+    "@types/react-dom": "^16.0.11",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.2.1"
   }
 }
