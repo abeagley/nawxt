@@ -172,6 +172,3 @@ $RECYCLE.BIN/
 .eslintrc
 .atomignore
 .vscode/settings.json
-
-# Nawxt
-.nawxt/prompts
