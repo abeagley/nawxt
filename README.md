@@ -4,6 +4,8 @@
   </a>
 </p>
 <p align="center">
-  <img alt="Nawxt" src="./github/nawxt-logo.png" />
+  <a href="https://github.com/abeagley/nawxt">
+    <img alt="Nawxt" src="./github/nawxt-logo.png" />
+  </a>
 </p>
 <hr />
