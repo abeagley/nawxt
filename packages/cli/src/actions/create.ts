@@ -92,7 +92,7 @@ export const create = async (projectName: string): Promise<boolean> => {
     return exitWithLog(`Unable to continue without all prompt answers`)
   }
 
-  promptAnswers.scriptsVersion = pkg.version
+  promptAnswers.scriptsVersion = pkg.dependencies['@nawxt/scripts']
 
   const targetDir = pathResolve(projectName || '.')
 
