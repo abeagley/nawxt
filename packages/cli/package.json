@@ -18,9 +18,15 @@
     "prebuild": "yarn run clean && yarn run lint"
   },
   "dependencies": {
-    "@nawxt/utils": "*"
+    "@nawxt/templates": "^0.1.0",
+    "@nawxt/utils": "^0.1.0",
+    "app-root-dir": "^1.0.2",
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "dotenv": "^6.1.0",
+    "exec-sh": "^0.3.2",
+    "fs-extra": "^7.0.1",
+    "inquirer": "^6.2.0"
   },
-  "devDependencies": {
-    "tslint-config-standard": "^"
-  }
+  "devDependencies": {}
 }

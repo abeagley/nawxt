@@ -1,7 +1,7 @@
+import { getEnv } from '@nawxt/utils'
 import { get as getAppDir } from 'app-root-dir'
 import chalk from 'chalk'
 import { join as pathJoin } from 'path'
-import { getEnv } from '@nawxt/utils'
 
 const appDir = getAppDir()
 require('dotenv').config({ path: pathJoin(appDir, 'config', 'env', getEnv()) })

@@ -1,12 +1,13 @@
 import chalk from 'chalk'
-import { appendFile, copy, emptyDir, ensureDir, pathExists, readFile, writeJSON } from 'fs-extra'
+import { appendFile, copy, emptyDir, pathExists, readFile, writeJSON } from 'fs-extra'
 import { EOL } from 'os'
-import { join as pathJoin, resolve as pathResolve } from 'path'
+import { join as pathJoin } from 'path'
 
 import prompt from '../prompter'
 import basicPrompts, { IBasicPromptResults } from '../prompts/basic'
 import dirExistsPrompt from '../prompts/dir-exists'
-import { exitWithLog } from '../utils/exit-with-log'
+
+import { exitWithLog } from '@nawxt/utils'
 
 export const dirExists = async (projectName: string, targetDir: string): Promise<void> => {
   const exists = await pathExists(targetDir)
@@ -83,28 +84,28 @@ export const writeConfig = async (targetDir: string, answers: IBasicPromptResult
 }
 
 export const create = async (projectName: string): Promise<boolean> => {
-  const results = await (prompt(basicPrompts(projectName)) as Promise<IBasicPromptResults>)
-
-  const fullName = projectName
-  const targetDir = pathResolve(fullName || '.')
-
-  await dirExists(projectName, targetDir)
-  await ensureDir(targetDir)
-  await copySkeleton(targetDir, results.template)
-
-  // If you want something in the applications environment file place it above this line
-  await writeConfig(targetDir, results)
-
-  // Ask for additional packages - DISABLED FOR NOW
-  // const libResults = await (prompt(libPrompt(libs)) as Promise<ILibPromptResults>)
-  await updateSkeletonPkg(fullName, targetDir, results)
-
-  const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
-  const pemInfo = chalk.cyan(`To use a custom ssl cert for development, place one here: ${fullName}/config/server.pem${EOL}${EOL}`)
-  const install = chalk.yellow(`To complete installation:${EOL}\tcd ${fullName} && yarn install${EOL}`)
-
-  console.info(success.concat(pemInfo).concat(install))
-  process.chdir(targetDir)
+  await (prompt(basicPrompts(projectName)) as Promise<IBasicPromptResults>)
+  //
+  // const fullName = projectName
+  // const targetDir = pathResolve(fullName || '.')
+  //
+  // await dirExists(projectName, targetDir)
+  // await ensureDir(targetDir)
+  // await copySkeleton(targetDir, results.template)
+  //
+  // // If you want something in the applications environment file place it above this line
+  // await writeConfig(targetDir, results)
+  //
+  // // Ask for additional packages - DISABLED FOR NOW
+  // // const libResults = await (prompt(libPrompt(libs)) as Promise<ILibPromptResults>)
+  // await updateSkeletonPkg(fullName, targetDir, results)
+  //
+  // const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
+  // const pemInfo = chalk.cyan(`To use a custom ssl cert for development, place one here: ${fullName}/config/server.pem${EOL}${EOL}`)
+  // const install = chalk.yellow(`To complete installation:${EOL}\tcd ${fullName} && yarn install${EOL}`)
+  //
+  // console.info(success.concat(pemInfo).concat(install))
+  // process.chdir(targetDir)
 
   return true
 }

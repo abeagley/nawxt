@@ -9,8 +9,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rollup -c",
     "clean": "rimraf ./dist",
+    "generate-imported-component": "imported-components src src/components/imported/index.ts",
     "lint": "tslint -t codeFrame 'src/**/*.ts'",
     "prebuild": "yarn run clean && yarn run lint"
   },

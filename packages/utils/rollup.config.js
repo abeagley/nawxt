@@ -11,26 +11,24 @@ const externalDeps = Object.keys(pkg.dependencies)
   .concat(Object.keys(mainPkg.dependencies))
   .concat(Object.keys(mainPkg.devDependencies))
 
-console.log(externalDeps)
-
 export default {
-  external: externalDeps.map(dep => dep).concat(['os', 'path']),
+  external: externalDeps.concat(['fs', 'path']),
   input: './src/index.ts',
   output: [
-    { file: pkg.main, format: 'cjs', sourcemap: true, banner: '#!/usr/bin/env node' },
-    { file: pkg.module, format: 'es', sourcemap: true, banner: '#!/usr/bin/env node' },
+    { file: pkg.main, format: 'cjs' },
+    { file: pkg.module, format: 'es' },
   ],
   plugins: [
     resolve({
       customResolveOptions: {
-        moduleDirectory: 'node_modules'
+        extensions: [ '.mjs', '.js', '.jsx', '.json', 'ts', 'tsx' ],
+        moduleDirectory: '../../node_modules'
       }
     }),
     commonjs(),
     json(),
     typescript({
       rollupCommonJSResolveHack: true,
-      tsconfig: './tsconfig.json',
       useTsconfigDeclarationDir: true
     })
   ],

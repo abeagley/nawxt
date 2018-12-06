@@ -1,6 +1,6 @@
 # test/code coverage
 jest.json
-!config/jest.json
+!.nawxt/config/jest.json
 clover.xml
 .scannerwork
 lcov.info

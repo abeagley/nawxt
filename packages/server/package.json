@@ -13,5 +13,7 @@
     "clean": "rimraf ./dist",
     "lint": "tslint -t codeFrame 'src/**/*.ts'",
     "prebuild": "yarn run clean && yarn run lint"
-  }
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }

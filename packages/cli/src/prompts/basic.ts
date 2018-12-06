@@ -1,4 +1,7 @@
+import { readdir } from 'fs-extra'
 import * as inquirer from 'inquirer'
+
+import { TEMPLATES } from '../paths'
 
 export interface IBasicPromptResults extends Object {
   port: string,
@@ -6,7 +9,17 @@ export interface IBasicPromptResults extends Object {
   template: string
 }
 
-export default (projectName: string): inquirer.Questions => {
+export default async (projectName: string): inquirer.Questions => {
+  const rawTemplates = await readdir(TEMPLATES)
+  const templates: any[] = []
+
+  rawTemplates.forEach((template) => {
+    templates.push({
+      name: template.replace(/-g/, ' '),
+      value: template
+    })
+  })
+
   return [
     {
       default: projectName,
@@ -18,12 +31,7 @@ export default (projectName: string): inquirer.Questions => {
       }
     },
     {
-      choices: [
-        {
-          name: 'Next7 TS React',
-          value: 'ts-next-7'
-        }
-      ],
+      choices: templates,
       message: 'Pick a template to get started:',
       name: 'template',
       type: 'list'

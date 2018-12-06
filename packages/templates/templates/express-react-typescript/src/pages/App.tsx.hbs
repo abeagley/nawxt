@@ -1,0 +1,45 @@
+import React, { Component } from 'react'
+import { Helmet } from 'react-helmet'
+import { hot, setConfig } from 'react-hot-loader'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+
+import rhlConfig from '../config/react-hot-loader'
+
+import Error404 from '../components/404'
+import Welcome from '../components/welcome'
+
+setConfig(rhlConfig)
+
+class App extends Component<object, object> {
+  render () {
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route
+            path={'/'}
+            render={(props) => (
+              <>
+                <Helmet defaultTitle="Hotels - Hilton">
+                  <title>{{projectName}}</title>
+                </Helmet>
+                <Welcome {...props} />
+              </>
+            )}
+          />
+          <Route
+            render={(props) => (
+              <>
+                <Helmet defaultTitle="Hotels - Hilton">
+                  <title>{{projectName}} : 404</title>
+                </Helmet>
+                <Error404 {...props} />
+              </>
+            )}
+          />
+        </Switch>
+      </BrowserRouter>
+    )
+  }
+}
+
+export default (process.env.NODE_ENV !== 'development') ? App : hot(App)
