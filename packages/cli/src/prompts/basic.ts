@@ -56,6 +56,12 @@ export default async (projectName: string): Promise<inquirer.Questions> => {
       message: 'Do you want to use HTTPS for development?',
       name: 'projectUseHTTPS',
       type: 'confirm'
+    },
+    {
+      default: '',
+      message: `What's your projects repo URL?`,
+      name: 'projectRepo',
+      type: 'input'
     }
   ]
 }
