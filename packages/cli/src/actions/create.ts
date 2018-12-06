@@ -1,13 +1,17 @@
 import chalk from 'chalk'
-import { appendFile, copy, emptyDir, pathExists, readFile, writeJSON } from 'fs-extra'
+import { copy, emptyDir, ensureDir, pathExists } from 'fs-extra'
 import { EOL } from 'os'
-import { join as pathJoin } from 'path'
+import { join as pathJoin, resolve as pathResolve } from 'path'
 
 import prompt from '../prompter'
 import basicPrompts, { IBasicPromptResults } from '../prompts/basic'
 import dirExistsPrompt from '../prompts/dir-exists'
 
-import { exitWithLog } from '@nawxt/utils'
+import { exitWithLog, walkDir } from '@nawxt/utils'
+import { compileTemplateFile } from '../handlebars'
+import { RELATIVE_NAWXT_TEMPLATE_PROMPT, TEMPLATES } from '../paths'
+
+const pkg = require('../package.json')
 
 export const dirExists = async (projectName: string, targetDir: string): Promise<void> => {
   const exists = await pathExists(targetDir)
@@ -16,12 +20,11 @@ export const dirExists = async (projectName: string, targetDir: string): Promise
     return
   }
 
-  console.warn(chalk.yellow(`The pod/lib package '${projectName}' already exists.`))
-
+  console.warn(chalk.yellow(`The project '${projectName}' already exists.`))
   const overwriteResult = await prompt(dirExistsPrompt())
 
   if (!overwriteResult.overwrite) {
-    exitWithLog(`Pod/lib generation canceled. Will not overwrite existing directory.`)
+    exitWithLog(`Project generation canceled. Will not overwrite existing directory.`)
   }
 
   await emptyDir(targetDir)
@@ -29,83 +32,80 @@ export const dirExists = async (projectName: string, targetDir: string): Promise
 
 export const copySkeleton = async (targetDir: string, template: string): Promise<void> => {
   try {
-    console.info(chalk.cyan(`Copying skeleton to pod/lib directory.`))
-    await copy(pathJoin(__dirname, '..', 'templates', template), targetDir)
+    console.info(chalk.cyan(`Copying template skeleton to directory.`))
+    await copy(pathJoin(TEMPLATES, template), targetDir)
   } catch (e) {
     exitWithLog(e.message)
   }
 }
 
-export const updateSkeletonPkg = async (
-  projectName: string,
-  targetDir: string,
-  answers: IBasicPromptResults
-): Promise<void> => {
+export const processSkeleton = async (targetDir: string, answers: IBasicPromptResults): Promise<void> => {
+  const PATH = pathJoin(targetDir, RELATIVE_NAWXT_TEMPLATE_PROMPT)
+  const hasTemplatePrompts = await pathExists(PATH)
+
+  if (!hasTemplatePrompts) {
+    return
+  }
+
+  console.info(chalk.cyan(`Grabbing template specific prompts.`))
+
+  const templatePromptQuestions = require(PATH)
+
+  let promptAnswers: any = null
+
   try {
-    console.info(chalk.cyan(`Modifying template package.json with project details.`))
-    const packageFile = pathJoin(targetDir, 'package.json')
-    const skeletonPackage =
-      await readFile(packageFile).then((data) => JSON.parse(data.toString()))
-
-    await writeJSON(
-      packageFile,
-      {
-        ...skeletonPackage,
-        name: projectName,
-        scripts: {
-          ...skeletonPackage.scripts,
-          docker: `nawxt-scripts docker ${answers.port}`
-        },
-        version: '0.1.0'
-      },
-      {
-        spaces: 2
-      }
-    )
+    promptAnswers = await (prompt(templatePromptQuestions) as Promise<IBasicPromptResults>)
   } catch (e) {
-    exitWithLog(e.message)
+    exitWithLog('Unable to process template prompt questions')
   }
-}
 
-export const writeConfig = async (targetDir: string, answers: IBasicPromptResults) => {
-  console.info(chalk.cyan(`Writing environment configuration from generator to 'test.env'.`))
-  const testFile = pathJoin(targetDir, 'config', 'env', 'test.env')
-  const stageFile = pathJoin(targetDir, 'config', 'env', 'staging.env')
-  const prodFile = pathJoin(targetDir, 'config', 'env', 'production.env')
+  const promptResults = {
+    ...promptAnswers,
+    ...answers
+  }
 
-  let env: string = `${EOL}`
-  Object.keys(answers).forEach((key) => {
-    // @ts-ignore
-    env += `${key.toUpperCase()}="${answers[key]}"${EOL}`
-  })
-  await appendFile(testFile, env)
-  await appendFile(stageFile, env)
-  await appendFile(prodFile, env)
+  console.info(chalk.cyan(`Compiling template specific files.`))
+
+  try {
+    const files = await walkDir(targetDir, (item: { path: string }) => {
+      const pieces: string[] = item.path.split('.')
+      return (pieces[pieces.length - 1] === 'hbs')
+    })
+
+    files.forEach((file) => compileTemplateFile(file, promptResults))
+  } catch (e) {
+    exitWithLog('Unable to walk project directory to compile template files')
+  }
 }
 
 export const create = async (projectName: string): Promise<boolean> => {
-  await (prompt(basicPrompts(projectName)) as Promise<IBasicPromptResults>)
-  //
-  // const fullName = projectName
-  // const targetDir = pathResolve(fullName || '.')
-  //
-  // await dirExists(projectName, targetDir)
-  // await ensureDir(targetDir)
-  // await copySkeleton(targetDir, results.template)
-  //
-  // // If you want something in the applications environment file place it above this line
-  // await writeConfig(targetDir, results)
-  //
-  // // Ask for additional packages - DISABLED FOR NOW
-  // // const libResults = await (prompt(libPrompt(libs)) as Promise<ILibPromptResults>)
-  // await updateSkeletonPkg(fullName, targetDir, results)
-  //
-  // const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
-  // const pemInfo = chalk.cyan(`To use a custom ssl cert for development, place one here: ${fullName}/config/server.pem${EOL}${EOL}`)
-  // const install = chalk.yellow(`To complete installation:${EOL}\tcd ${fullName} && yarn install${EOL}`)
-  //
-  // console.info(success.concat(pemInfo).concat(install))
-  // process.chdir(targetDir)
+  let promptAnswers: null | IBasicPromptResults = null
+
+  try {
+    const promptQuestions = await basicPrompts(projectName)
+    promptAnswers = await (prompt(promptQuestions) as Promise<IBasicPromptResults>)
+  } catch (e) {
+    exitWithLog('Unable to process prompt questions')
+  }
+
+  if (!promptAnswers) {
+    return exitWithLog(`Unable to continue without all prompt answers`)
+  }
+
+  promptAnswers.scriptsVersion = pkg.version
+
+  const targetDir = pathResolve(projectName || '.')
+
+  await dirExists(projectName, targetDir)
+  await ensureDir(targetDir)
+  await copySkeleton(targetDir, promptAnswers.projectTemplate)
+  await processSkeleton(targetDir, promptAnswers)
+
+  const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
+  const pemInfo = promptAnswers.projectUseHTTPS ? chalk.cyan(`To use a custom ssl cert for development, place one here: ${projectName}/.nawxt/config/server.pem${EOL}${EOL}`) : ''
+  const install = chalk.yellow(`To complete installation:${EOL}\tcd ${projectName} && yarn install${EOL}`)
+
+  console.info(success.concat(pemInfo).concat(install))
 
   return true
 }

@@ -6,10 +6,7 @@ import json from 'rollup-plugin-json'
 const mainPkg = require('../../package.json')
 const pkg = require('./package.json')
 
-const externalDeps = Object.keys(pkg.dependencies)
-  .concat(Object.keys(pkg.devDependencies))
-  .concat(Object.keys(mainPkg.dependencies))
-  .concat(Object.keys(mainPkg.devDependencies))
+const externalDeps = Object.keys(pkg.dependencies).concat(Object.keys(mainPkg.dependencies))
 
 export default {
   external: externalDeps.concat(['os', 'path']),
@@ -19,9 +16,9 @@ export default {
     { file: pkg.module, format: 'es', sourcemap: true, banner: '#!/usr/bin/env node' },
   ],
   plugins: [
+    json(),
     resolve(),
     commonjs(),
-    json(),
     typescript({
       rollupCommonJSResolveHack: true,
       useTsconfigDeclarationDir: true

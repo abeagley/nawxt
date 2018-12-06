@@ -3,6 +3,7 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "inlineSourceMap": true,
     "jsx": "react",
     "lib": ["esnext", "esnext.asynciterable", "dom"],
     "module": "esnext",

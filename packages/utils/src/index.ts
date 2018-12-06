@@ -1,10 +1,10 @@
 import { getEnv } from './env'
-import { readFile } from './fs'
+import { walkDir } from './fs'
 import { announceCommand, exitWithLog } from './logging'
 
 export {
   announceCommand,
   exitWithLog,
-  readFile,
-  getEnv
+  getEnv,
+  walkDir
 }

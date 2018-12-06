@@ -4,18 +4,21 @@ import * as inquirer from 'inquirer'
 import { TEMPLATES } from '../paths'
 
 export interface IBasicPromptResults extends Object {
-  port: string,
-  projectName: string,
-  template: string
+  projectName: string
+  projectPort: string
+  projectTemplate: string
+  projectUseHTTPS: boolean
+  projectVersion: string
+  scriptsVersion: string
 }
 
-export default async (projectName: string): inquirer.Questions => {
+export default async (projectName: string): Promise<inquirer.Questions> => {
   const rawTemplates = await readdir(TEMPLATES)
   const templates: any[] = []
 
   rawTemplates.forEach((template) => {
     templates.push({
-      name: template.replace(/-g/, ' '),
+      name: template,
       value: template
     })
   })
@@ -33,14 +36,26 @@ export default async (projectName: string): inquirer.Questions => {
     {
       choices: templates,
       message: 'Pick a template to get started:',
-      name: 'template',
+      name: 'projectTemplate',
       type: 'list'
     },
     {
       default: '3040',
       message: 'Which port do you want to run your pod on?',
-      name: 'port',
+      name: 'projectPort',
       type: 'input'
+    },
+    {
+      default: '0.1.0',
+      message: 'Where do you want to start your projects version at?',
+      name: 'projectVersion',
+      type: 'input'
+    },
+    {
+      default: false,
+      message: 'Do you want to use HTTPS for development?',
+      name: 'projectUseHTTPS',
+      type: 'confirm'
     }
   ]
 }

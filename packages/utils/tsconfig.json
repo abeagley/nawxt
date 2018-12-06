@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "declarationDir": "./dist/types",
-    "inlineSourceMap": true,
-    "rootDir": "./src"
+    "sourceRoot": "./src"
   },
   "exclude": [
     "./src/**/*.spec.ts",

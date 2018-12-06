@@ -1,5 +1,6 @@
-import { announceCommand, readFile } from '@nawxt/utils'
+import { announceCommand } from '@nawxt/utils'
 import * as commander from 'commander'
+import { readFile } from 'fs-extra'
 import { join as pathJoin } from 'path'
 
 import { create } from './actions/create'

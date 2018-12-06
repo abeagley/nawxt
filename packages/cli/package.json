@@ -18,6 +18,7 @@
     "prebuild": "yarn run clean && yarn run lint"
   },
   "dependencies": {
+    "@nawxt/scripts": "^0.1.1",
     "@nawxt/templates": "^0.1.1",
     "@nawxt/utils": "^0.1.1",
     "app-root-dir": "^1.0.2",
@@ -26,6 +27,7 @@
     "dotenv": "^6.1.0",
     "exec-sh": "^0.3.2",
     "fs-extra": "^7.0.1",
+    "handlebars": "^4.0.12",
     "inquirer": "^6.2.0"
   }
 }

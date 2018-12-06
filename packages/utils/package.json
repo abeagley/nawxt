@@ -15,6 +15,26 @@
     "prebuild": "yarn run clean && yarn run lint"
   },
   "dependencies": {
-    "chalk": "^2.4.1"
+    "chalk": "^2.4.1",
+    "klaw-sync": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/app-root-dir": "^0.1.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/node": "^10.12.12",
+    "@types/react": "^16.7.13",
+    "@types/react-dom": "^16.0.11",
+    "cpy-cli": "^2.0.0",
+    "exec-sh": "^0.3.2",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.4",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript2": "^0.18.0",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.2.1"
   }
 }
