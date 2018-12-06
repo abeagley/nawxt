@@ -5,14 +5,14 @@ import ReactDOM from 'react-dom'
 // @ts-ignore: We include the dynamically imported components
 import importedComponents from '../components/imported'
 
-import App from '../pages/App.tsx.hbs'
+import Router from './Router'
 
 const element = document.getElementById('app')
 
 if (process.env.NODE_ENV === 'production') {
   rehydrateMarks().then(() => {
-    ReactDOM.hydrate(<App />, element)
+    ReactDOM.hydrate(<Router />, element)
   })
 } else {
-  ReactDOM.render(<App />, element)
+  ReactDOM.render(<Router />, element)
 }

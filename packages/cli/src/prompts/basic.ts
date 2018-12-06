@@ -6,6 +6,7 @@ import { TEMPLATES } from '../paths'
 export interface IBasicPromptResults extends Object {
   projectName: string
   projectPort: string
+  projectRepo: string
   projectTemplate: string
   projectUseHTTPS: boolean
   projectVersion: string

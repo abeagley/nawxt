@@ -10,16 +10,17 @@ import Welcome from '../components/welcome'
 
 setConfig(rhlConfig)
 
-class App extends Component<object, object> {
+class Router extends Component<object, object> {
   render () {
     return (
       <BrowserRouter>
         <Switch>
           <Route
+            exact
             path={'/'}
             render={(props) => (
               <>
-                <Helmet defaultTitle="Hotels - Hilton">
+                <Helmet defaultTitle="">
                   <title>{{projectName}}</title>
                 </Helmet>
                 <Welcome {...props} />
@@ -29,7 +30,7 @@ class App extends Component<object, object> {
           <Route
             render={(props) => (
               <>
-                <Helmet defaultTitle="Hotels - Hilton">
+                <Helmet defaultTitle="">
                   <title>{{projectName}} : 404</title>
                 </Helmet>
                 <Error404 {...props} />
@@ -42,4 +43,4 @@ class App extends Component<object, object> {
   }
 }
 
-export default (process.env.NODE_ENV !== 'development') ? App : hot(App)
+export default (process.env.NODE_ENV !== 'development') ? Router : hot(module)(Router)
