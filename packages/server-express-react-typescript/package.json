@@ -1,0 +1,39 @@
+{
+  "name": "@nawxt/server-express-react-typescript",
+  "license": "MIT",
+  "version": "0.1.2",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "repository": "https://github.com/abeagley/nawxt/packages/server-express-react-typescript",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "rimraf ./dist",
+    "lint": "tslint -t codeFrame 'src/**/*.ts'",
+    "prebuild": "yarn run clean && yarn run lint"
+  },
+  "dependencies": {
+    "app-root-dir": "^1.0.2",
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
+    "cors": "^2.8.5",
+    "del": "^3.0.0",
+    "express": "^4.16.4",
+    "fs-extra": "^7.0.1",
+    "selfsigned": "^1.10.4"
+  },
+  "devDependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-imported-component": "^5.2.4",
+    "react-router-dom": "^4.3.1"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-imported-component": "^5.2.4",
+    "react-router-dom": "^4.3.1"
+  }
+}
