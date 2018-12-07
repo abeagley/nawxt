@@ -1,5 +1,6 @@
 import chalk from 'chalk'
-import { copy, emptyDir, ensureDir, pathExists, rmdir } from 'fs-extra'
+import del from 'del'
+import { copy, emptyDir, ensureDir, pathExists } from 'fs-extra'
 import { EOL } from 'os'
 import { join as pathJoin, resolve as pathResolve } from 'path'
 
@@ -54,7 +55,8 @@ export const ensureDepPackages = async (pkgs: IDepPackages): Promise<IDepPackage
   const packages: string[] = []
 
   await asyncForEach<string>([ pkgs.projectScripts, pkgs.projectServer ], async (pkgName) => {
-    packages.push(await getLatestPackageVersion(pkgName))
+    const result = await getLatestPackageVersion(pkgName)
+    packages.push(result)
   })
 
   if (packages.length !== 2) {
@@ -67,7 +69,7 @@ export const ensureDepPackages = async (pkgs: IDepPackages): Promise<IDepPackage
   }
 }
 
-export const processSkeleton = async (targetDir: string, answers: IBasicPromptResults): Promise<IDepPackages> => {
+export const processSkeleton = async (targetDir: string, answers: IBasicPromptResults): Promise<void> => {
   const DEPS_PATH = pathJoin(targetDir, RELATIVE_NAWXT_TEMPLATE_DEPS)
   const PATH = pathJoin(targetDir, RELATIVE_NAWXT_TEMPLATE_PROMPT)
 
@@ -90,9 +92,13 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
     exitWithLog('Unable to process template prompt questions')
   }
 
+  const { projectServer, projectScripts } = await ensureDepPackages(prePkgVersions)
+
   const promptResults = {
     ...promptAnswers,
-    ...answers
+    ...answers,
+    projectScripts,
+    projectServer
   }
 
   console.info(chalk.cyan(`Compiling template specific files.`))
@@ -108,12 +114,8 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
     exitWithLog('Unable to walk project directory to compile template files')
   }
 
-  const pkgVersions = await ensureDepPackages(prePkgVersions)
-
-  console.info(chalk.cyan(`Cleaning up installation folder.`))
-  await rmdir(pathJoin(targetDir, RELATIVE_NAWXT_INSTALL_FOLDER))
-
-  return pkgVersions
+  console.info(chalk.cyan(`Cleaning up template installation folder.`))
+  await del(pathJoin(targetDir, RELATIVE_NAWXT_INSTALL_FOLDER), { force: true })
 }
 
 export const create = async (projectName: string): Promise<boolean> => {
@@ -135,9 +137,7 @@ export const create = async (projectName: string): Promise<boolean> => {
   await dirExists(projectName, targetDir)
   await ensureDir(targetDir)
   await copySkeleton(targetDir, promptAnswers.projectTemplate)
-
-  const { projectScripts, projectServer } = await processSkeleton(targetDir, promptAnswers)
-  promptAnswers = { ...promptAnswers, projectScripts, projectServer }
+  await processSkeleton(targetDir, promptAnswers)
 
   const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
   const pemInfo = promptAnswers.projectUseHTTPS ? chalk.cyan(`To use a custom ssl cert for development, place one here: ${projectName}/.nawxt/config/server.pem${EOL}${EOL}`) : ''

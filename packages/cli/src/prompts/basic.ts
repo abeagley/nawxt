@@ -4,6 +4,7 @@ import * as inquirer from 'inquirer'
 import { TEMPLATES } from '../paths'
 
 export interface IBasicPromptResults extends Object {
+  customTemplate: string
   projectName: string
   projectPort: string
   projectRepo: string
@@ -36,10 +37,24 @@ export default async (projectName: string): Promise<inquirer.Questions> => {
       }
     },
     {
+      default: false,
+      message: 'Do you want to use a custom template?',
+      name: 'customTemplate',
+      type: 'confirm'
+    },
+    {
       choices: templates,
       message: 'Pick a template to get started:',
       name: 'projectTemplate',
-      type: 'list'
+      type: 'list',
+      when: (answers: IBasicPromptResults) => !answers.customTemplate
+    },
+    {
+      choices: templates,
+      message: `Input the npm published template package name:`,
+      name: 'projectTemplate',
+      type: 'input',
+      when: (answers: IBasicPromptResults) => answers.customTemplate
     },
     {
       default: '3040',

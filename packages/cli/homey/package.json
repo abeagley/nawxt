@@ -6,13 +6,13 @@
   "repository": "",
   "scripts": {
     "build": "nawxt-scripts build",
-    "docker": "nawxt-scripts start 3040",
+    "docker": "nawxt-scripts docker 3040",
     "start": "nawxt-scripts start",
     "test": "nawxt-scripts test"
   },
   "dependencies": {
-    ,
-    ,
+    "@nawxt/scripts-express-react-typescript": "^0.1.9",
+    "@nawxt/server-express-react-typescript": "^0.1.7",
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
     "react-helmet": "^5.2.0",
