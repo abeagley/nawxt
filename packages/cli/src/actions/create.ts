@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import del from 'del'
 import { copy, emptyDir, ensureDir, pathExists } from 'fs-extra'
 import { EOL } from 'os'
 import { join as pathJoin, resolve as pathResolve } from 'path'
@@ -13,7 +12,6 @@ import { asyncForEach } from '../async-for-each'
 import { compileTemplateFile } from '../handlebars'
 import { getLatestPackageVersion } from '../npm-search'
 import {
-  RELATIVE_NAWXT_INSTALL_FOLDER,
   RELATIVE_NAWXT_TEMPLATE_DEPS,
   RELATIVE_NAWXT_TEMPLATE_PROMPT,
   TEMPLATES
@@ -113,9 +111,6 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
   } catch (e) {
     exitWithLog('Unable to walk project directory to compile template files')
   }
-
-  console.info(chalk.cyan(`Cleaning up template installation folder.`))
-  await del(pathJoin(targetDir, RELATIVE_NAWXT_INSTALL_FOLDER), { force: true })
 }
 
 export const create = async (projectName: string): Promise<boolean> => {
