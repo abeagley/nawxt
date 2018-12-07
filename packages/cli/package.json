@@ -28,6 +28,7 @@
     "exec-sh": "^0.3.2",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.0.12",
-    "inquirer": "^6.2.0"
+    "inquirer": "^6.2.0",
+    "libnpmsearch": "^2.0.0"
   }
 }

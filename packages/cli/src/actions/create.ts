@@ -1,5 +1,6 @@
 import chalk from 'chalk'
 import { copy, emptyDir, ensureDir, pathExists } from 'fs-extra'
+import npmsearch from 'libnpmsearch'
 import { EOL } from 'os'
 import { join as pathJoin, resolve as pathResolve } from 'path'
 
@@ -78,6 +79,25 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
   }
 }
 
+export const ensureServerPackage = async (template: string): Promise<string> => {
+  console.info(chalk.cyan(`Checking for matching server package for template.`))
+
+  let items: any[] = []
+  try {
+    items = await npmsearch(`@nawxt/server-${template}`, { limit: 1 })
+  } catch (e) {
+    exitWithLog('Unable to query for server package for the selected template')
+  }
+
+  if (items.length === 0) {
+    exitWithLog(`No results for server template: @nawxt/server-${template}. Aborting.`)
+  }
+
+  const sPkg = items.shift()
+
+  return `"${sPkg.name}": "^${sPkg.version}"`
+}
+
 export const create = async (projectName: string): Promise<boolean> => {
   let promptAnswers: null | IBasicPromptResults = null
 
@@ -92,6 +112,7 @@ export const create = async (projectName: string): Promise<boolean> => {
     return exitWithLog(`Unable to continue without all prompt answers`)
   }
 
+  promptAnswers.projectServer = await ensureServerPackage(promptAnswers.projectTemplate)
   promptAnswers.scriptsVersion = pkg.dependencies['@nawxt/scripts']
 
   const targetDir = pathResolve(projectName || '.')
