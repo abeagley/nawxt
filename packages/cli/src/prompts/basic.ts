@@ -4,7 +4,7 @@ import * as inquirer from 'inquirer'
 import { TEMPLATES } from '../paths'
 
 export interface IBasicPromptResults extends Object {
-  customTemplate: string
+  projectCustomTemplate: string
   projectName: string
   projectPort: string
   projectRepo: string
@@ -29,7 +29,7 @@ export default async (projectName: string): Promise<inquirer.Questions> => {
   return [
     {
       default: projectName,
-      message: 'Pod/Library Name:',
+      message: 'Project name:',
       name: 'projectName',
       type: 'input',
       validate: (input: string): boolean => {
@@ -39,7 +39,7 @@ export default async (projectName: string): Promise<inquirer.Questions> => {
     {
       default: false,
       message: 'Do you want to use a custom template?',
-      name: 'customTemplate',
+      name: 'projectCustomTemplate',
       type: 'confirm'
     },
     {
@@ -47,14 +47,14 @@ export default async (projectName: string): Promise<inquirer.Questions> => {
       message: 'Pick a template to get started:',
       name: 'projectTemplate',
       type: 'list',
-      when: (answers: IBasicPromptResults) => !answers.customTemplate
+      when: (answers: IBasicPromptResults) => !answers.projectCustomTemplate
     },
     {
       choices: templates,
       message: `Input the npm published template package name:`,
       name: 'projectTemplate',
       type: 'input',
-      when: (answers: IBasicPromptResults) => answers.customTemplate
+      when: (answers: IBasicPromptResults) => answers.projectCustomTemplate
     },
     {
       default: '3040',
