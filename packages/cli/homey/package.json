@@ -1,20 +1,20 @@
 {
-  "name": "{{projectName}}",
+  "name": "homey",
   "license": "UNLICENSED",
-  "version": "{{projectVersion}}",
+  "version": "0.1.0",
   "private": false,
-  "repository": "{{projectRepo}}",
+  "repository": "",
   "scripts": {
     "build": "nawxt-scripts build",
-    "docker": "nawxt-scripts start {{projectPort}}",
+    "docker": "nawxt-scripts start 3040",
     "start": "nawxt-scripts start",
     "test": "nawxt-scripts test"
   },
   "dependencies": {
-    {{{projectScripts}}},
-    {{{projectServer}}},
-    "react": "^{{reactVersion}}",
-    "react-dom": "^{{reactVersion}}",
+    ,
+    ,
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2",
     "react-helmet": "^5.2.0",
     "react-imported-component": "^5.2.3",
     "react-router-dom": "^4.3.1"
@@ -26,11 +26,7 @@
     "@types/react-helmet": "^5.0.7",
     "@types/react-router-dom": "^4.3.1",
     "tslint": "^5.11.0",
-    {{#switch tslintStyle }}
-      {{#case "standard" }}
     "tslint-config-standard": "^8.0.1",
-      {{/case}}
-    {{/switch}}
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.1"
   }

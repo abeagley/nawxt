@@ -7,11 +7,11 @@ export interface IBasicPromptResults extends Object {
   projectName: string
   projectPort: string
   projectRepo: string
+  projectScripts: string
   projectServer: string
   projectTemplate: string
   projectUseHTTPS: boolean
   projectVersion: string
-  scriptsVersion: string
 }
 
 export default async (projectName: string): Promise<inquirer.Questions> => {

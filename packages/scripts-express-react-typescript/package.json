@@ -1,0 +1,40 @@
+{
+  "name": "@nawxt/scripts-express-react-typescript",
+  "license": "MIT",
+  "version": "0.1.2",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "bin": {
+    "nawxt-scripts": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/abeagley/nawxt/packages/scripts-express-react-typescript",
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "rimraf ./dist",
+    "lint": "tslint -t codeFrame 'src/**/*.ts'",
+    "prebuild": "yarn run clean && yarn run lint"
+  },
+  "dependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
+    "babel-plugin-styled-components": "^1.9.2",
+    "chalk": "^2.4.1",
+    "parcel-bundler": "^1.10.3",
+    "parcel-plugin-static-files-copy": "^1.2.4",
+    "parcel-plugin-typescript": "^1.0.0",
+    "react-hot-loader": "^4.5.1"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-imported-component": "^5.2.4",
+    "react-router-dom": "^4.3.1"
+  }
+}

@@ -1,6 +1,5 @@
 import chalk from 'chalk'
-import { copy, emptyDir, ensureDir, pathExists } from 'fs-extra'
-import npmsearch from 'libnpmsearch'
+import { copy, emptyDir, ensureDir, pathExists, rmdir } from 'fs-extra'
 import { EOL } from 'os'
 import { join as pathJoin, resolve as pathResolve } from 'path'
 
@@ -9,10 +8,29 @@ import basicPrompts, { IBasicPromptResults } from '../prompts/basic'
 import dirExistsPrompt from '../prompts/dir-exists'
 
 import { exitWithLog, walkDir } from '@nawxt/utils'
+import { asyncForEach } from '../async-for-each'
 import { compileTemplateFile } from '../handlebars'
-import { RELATIVE_NAWXT_TEMPLATE_PROMPT, TEMPLATES } from '../paths'
+import { getLatestPackageVersion } from '../npm-search'
+import {
+  RELATIVE_NAWXT_INSTALL_FOLDER,
+  RELATIVE_NAWXT_TEMPLATE_DEPS,
+  RELATIVE_NAWXT_TEMPLATE_PROMPT,
+  TEMPLATES
+} from '../paths'
 
-const pkg = require('../package.json')
+interface IDepPackages {
+  projectScripts: string,
+  projectServer: string
+}
+
+export const copySkeleton = async (targetDir: string, template: string): Promise<void> => {
+  try {
+    console.info(chalk.cyan(`Copying template skeleton to directory.`))
+    await copy(pathJoin(TEMPLATES, template), targetDir)
+  } catch (e) {
+    exitWithLog(e.message)
+  }
+}
 
 export const dirExists = async (projectName: string, targetDir: string): Promise<void> => {
   const exists = await pathExists(targetDir)
@@ -31,29 +49,41 @@ export const dirExists = async (projectName: string, targetDir: string): Promise
   await emptyDir(targetDir)
 }
 
-export const copySkeleton = async (targetDir: string, template: string): Promise<void> => {
-  try {
-    console.info(chalk.cyan(`Copying template skeleton to directory.`))
-    await copy(pathJoin(TEMPLATES, template), targetDir)
-  } catch (e) {
-    exitWithLog(e.message)
+export const ensureDepPackages = async (pkgs: IDepPackages): Promise<IDepPackages> => {
+  console.info(chalk.cyan(`Checking for matching server and scripts package for template.`))
+  const packages: string[] = []
+
+  await asyncForEach<string>([ pkgs.projectScripts, pkgs.projectServer ], async (pkgName) => {
+    packages.push(await getLatestPackageVersion(pkgName))
+  })
+
+  if (packages.length !== 2) {
+    exitWithLog(`No results for template packages. Aborting.`)
+  }
+
+  return {
+    projectScripts: packages[0],
+    projectServer: packages[1]
   }
 }
 
-export const processSkeleton = async (targetDir: string, answers: IBasicPromptResults): Promise<void> => {
+export const processSkeleton = async (targetDir: string, answers: IBasicPromptResults): Promise<IDepPackages> => {
+  const DEPS_PATH = pathJoin(targetDir, RELATIVE_NAWXT_TEMPLATE_DEPS)
   const PATH = pathJoin(targetDir, RELATIVE_NAWXT_TEMPLATE_PROMPT)
+
+  const hasTemplateDeps = await pathExists(DEPS_PATH)
   const hasTemplatePrompts = await pathExists(PATH)
 
-  if (!hasTemplatePrompts) {
-    return
+  if (!hasTemplatePrompts || !hasTemplateDeps) {
+    exitWithLog(`This template hasn't supplied the required installation files (deps.js and template.js). Aborting.`)
   }
 
-  console.info(chalk.cyan(`Grabbing template specific prompts.`))
+  console.info(chalk.cyan(`Grabbing template specific package versions and prompts.`))
 
+  const prePkgVersions = require(DEPS_PATH)
   const templatePromptQuestions = require(PATH)
 
   let promptAnswers: any = null
-
   try {
     promptAnswers = await (prompt(templatePromptQuestions) as Promise<IBasicPromptResults>)
   } catch (e) {
@@ -77,25 +107,13 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
   } catch (e) {
     exitWithLog('Unable to walk project directory to compile template files')
   }
-}
 
-export const ensureServerPackage = async (template: string): Promise<string> => {
-  console.info(chalk.cyan(`Checking for matching server package for template.`))
+  const pkgVersions = await ensureDepPackages(prePkgVersions)
 
-  let items: any[] = []
-  try {
-    items = await npmsearch(`@nawxt/server-${template}`, { limit: 1 })
-  } catch (e) {
-    exitWithLog('Unable to query for server package for the selected template')
-  }
+  console.info(chalk.cyan(`Cleaning up installation folder.`))
+  await rmdir(pathJoin(targetDir, RELATIVE_NAWXT_INSTALL_FOLDER))
 
-  if (items.length === 0) {
-    exitWithLog(`No results for server template: @nawxt/server-${template}. Aborting.`)
-  }
-
-  const sPkg = items.shift()
-
-  return `"${sPkg.name}": "^${sPkg.version}"`
+  return pkgVersions
 }
 
 export const create = async (projectName: string): Promise<boolean> => {
@@ -112,15 +130,14 @@ export const create = async (projectName: string): Promise<boolean> => {
     return exitWithLog(`Unable to continue without all prompt answers`)
   }
 
-  promptAnswers.projectServer = await ensureServerPackage(promptAnswers.projectTemplate)
-  promptAnswers.scriptsVersion = pkg.dependencies['@nawxt/scripts']
-
   const targetDir = pathResolve(projectName || '.')
 
   await dirExists(projectName, targetDir)
   await ensureDir(targetDir)
   await copySkeleton(targetDir, promptAnswers.projectTemplate)
-  await processSkeleton(targetDir, promptAnswers)
+
+  const { projectScripts, projectServer } = await processSkeleton(targetDir, promptAnswers)
+  promptAnswers = { ...promptAnswers, projectScripts, projectServer }
 
   const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
   const pemInfo = promptAnswers.projectUseHTTPS ? chalk.cyan(`To use a custom ssl cert for development, place one here: ${projectName}/.nawxt/config/server.pem${EOL}${EOL}`) : ''
