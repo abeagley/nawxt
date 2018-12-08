@@ -1,7 +1,7 @@
 {
   "name": "@nawxt/scripts-express-react-typescript",
   "license": "MIT",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "bin": {
@@ -23,7 +23,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
-    "@nawxt/utils": "^0.1.2",
+    "@nawxt/utils": "^0.2.0",
     "app-root-dir": "^1.0.2",
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-styled-components": "^1.9.2",
