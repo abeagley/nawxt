@@ -9,7 +9,6 @@ export interface IBasicPromptResults extends Object {
   projectPort: string
   projectRepo: string
   projectScripts: string
-  projectServer: string
   projectTemplate: string
   projectUseHTTPS: boolean
   projectVersion: string

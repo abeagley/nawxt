@@ -1,10 +1,11 @@
-import { get as appDir } from 'app-root-dir'
 import fs from 'fs'
 import { join as pathJoin } from 'path'
 import selfsigned from 'selfsigned'
 
+import { APP_NAWXT_CONFIG_DIR } from '../paths'
+
 export const genCerts = () => {
-  const certPath = pathJoin(appDir(), '.nawxt', 'config', 'server.pem')
+  const certPath = pathJoin(APP_NAWXT_CONFIG_DIR, 'server.pem')
 
   const certExists = fs.existsSync(certPath)
 

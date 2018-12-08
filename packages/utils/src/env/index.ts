@@ -5,7 +5,9 @@ export const getEnv = () => {
       return 'production.env'
     case 'staging':
       return 'staging.env'
-    default:
+    case 'test':
       return 'test.env'
+    default:
+      return 'development.env'
   }
 }

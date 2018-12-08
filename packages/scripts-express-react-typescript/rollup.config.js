@@ -9,7 +9,7 @@ const pkg = require('./package.json')
 const externalDeps = Object.keys(pkg.dependencies).concat(Object.keys(mainPkg.dependencies))
 
 export default {
-  external: externalDeps.concat(['os', 'path']),
+  external: externalDeps.concat(['fs', 'http', 'https', 'os', 'path']),
   input: './src/index.ts',
   output: [
     { file: pkg.main, format: 'cjs', sourcemap: true, banner: '#!/usr/bin/env node' },

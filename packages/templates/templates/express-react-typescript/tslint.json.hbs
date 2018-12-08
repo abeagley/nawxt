@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "tslint:latest",
+    {{#switch tslintStyle }}
+      {{#case "standard" }}
+    "tslint-config-standard",
+      {{/case}}
+    {{/switch}}
+    "tslint-react"
+  ],
+  "rules": {
+    "prefer-const": true,
+    "quotemark": [true, "single", "jsx-double"]
+  }
+}

@@ -18,8 +18,7 @@ import {
 } from '../paths'
 
 interface IDepPackages {
-  projectScripts: string,
-  projectServer: string
+  projectScripts: string
 }
 
 export const copySkeleton = async (targetDir: string, template: string): Promise<void> => {
@@ -48,22 +47,22 @@ export const dirExists = async (projectName: string, targetDir: string): Promise
   await emptyDir(targetDir)
 }
 
+// TODO: We only pull a single package in right now, but it might be nice to let templates extend this further
 export const ensureDepPackages = async (pkgs: IDepPackages): Promise<IDepPackages> => {
   console.info(chalk.cyan(`Checking for matching server and scripts package for template.`))
   const packages: string[] = []
 
-  await asyncForEach<string>([ pkgs.projectScripts, pkgs.projectServer ], async (pkgName) => {
+  await asyncForEach<string>([ pkgs.projectScripts ], async (pkgName) => {
     const result = await getLatestPackageVersion(pkgName)
     packages.push(result)
   })
 
-  if (packages.length !== 2) {
+  if (packages.length === 0) {
     exitWithLog(`No results for template packages. Aborting.`)
   }
 
   return {
-    projectScripts: packages[0],
-    projectServer: packages[1]
+    projectScripts: packages[0]
   }
 }
 
@@ -90,13 +89,12 @@ export const processSkeleton = async (targetDir: string, answers: IBasicPromptRe
     exitWithLog('Unable to process template prompt questions')
   }
 
-  const { projectServer, projectScripts } = await ensureDepPackages(prePkgVersions)
+  const { projectScripts } = await ensureDepPackages(prePkgVersions)
 
   const promptResults = {
     ...promptAnswers,
     ...answers,
-    projectScripts,
-    projectServer
+    projectScripts
   }
 
   console.info(chalk.cyan(`Compiling template specific files.`))
