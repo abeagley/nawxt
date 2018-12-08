@@ -134,7 +134,7 @@ export const create = async (projectName: string): Promise<boolean> => {
 
   const success = chalk.green(`${EOL}Project creation successful!${EOL}${EOL}`)
   const pemInfo = promptAnswers.projectUseHTTPS ? chalk.cyan(`To use a custom ssl cert for development, place one here: ${projectName}/.nawxt/config/server.pem${EOL}${EOL}`) : ''
-  const install = chalk.yellow(`To complete installation:${EOL}\tcd ${projectName} && yarn install${EOL}`)
+  const install = chalk.yellow(`To complete installation:${EOL}\tcd ${projectName} && npm install${EOL}`)
 
   console.info(success.concat(pemInfo).concat(install))
 

@@ -36,9 +36,5 @@
     "tslint-config-standard": "^8.0.1",
     "tslint-react": "^3.6.0",
     "typescript": "^3.2.1"
-  },
-  "parcel-plugin-static": {
-    "source": "../../static",
-    "destination": "."
   }
 }
